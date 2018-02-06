@@ -1,8 +1,11 @@
 package com.seax.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.seax.dao.UserMapper;
 import com.seax.entity.User;
 import com.seax.service.IUserService;
@@ -33,6 +36,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<User> select(User user) {
-        return userMapperImpl.select(user);
+        List<User> userList = new ArrayList<User>();
+
+        try {
+            userList = userMapperImpl.select(user);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return userList;
     }
 }
