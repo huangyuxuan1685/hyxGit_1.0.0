@@ -13,7 +13,7 @@
 			jdbcType="TIMESTAMP" />
 	</resultMap>
 
-
+	<!-- 人员基本查询 -->
 	<select id="select" resultMap="BaseResultMap" useCache="false">
 		select
 		user_name,
@@ -25,16 +25,49 @@
 		from
 		user as u
 		<where>
-			1 = 1
 			<if test="userName != null and userName !=''">
-				and user_name = #{userName}
+				and user_name like concat("%",#{userName},"%")
 			</if>
 			<if test="nickName != null and nickName !=''">
-				and nick_name = #{nickName}
+				and nick_name like concat("%",#{nickName},"%")
 			</if>
 			<if test="mobile != null and mobile !=''">
-				and mobile = #{mobile}
+				and mobile like concat("%",#{mobile},"%")
 			</if>
+		</where>
+	</select>
+	
+	<insert id="insert" parameterType="com.seax.entity.User">
+	INSERT INTO `user` (
+		user_name,
+		user_password,
+		nick_name,
+		<if test="mobile != null and mobile !=''">
+			mobile,
+		</if>
+		created_time
+	)
+	VALUES (
+		#{userName},
+		#{userPassword},
+		#{nickName},
+		<if test="mobile != null and mobile !=''">
+			#{mobile},
+		</if>
+		#{createdTime}
+	)
+	</insert>
+	
+	<!-- 根据id查询人员 -->
+	<select id="selectOneUserByUserName" resultMap="BaseResultMap" useCache="false">
+		select
+		id,
+		user_name,
+		nick_name
+		from
+		user as u
+		<where>
+			user_name = #{userName}
 		</where>
 	</select>
 

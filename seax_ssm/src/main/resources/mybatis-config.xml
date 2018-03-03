@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration
-  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+	  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	  "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-	<!-- <typeAliases> -->
-	<!-- # 定义单个别名 -->
-	<!-- <typeAlias type="com.domain.User" alias="user"/> -->
-	<!-- # 批量的别名定义，扫描整个包下面的所有类，别名为类名（首字母大小写都可以） -->
-	<!-- <package name="com.po"/> -->
-	<!-- <package name="其他包"/> -->
-	<!-- </typeAliases> -->
 	<settings>
 		<!-- 查询时，关闭关联对象即时加载以提高性能 是否启用延迟加载机制，默认值true -->
 		<setting name="lazyLoadingEnabled" value="true" />
@@ -17,9 +10,16 @@
 		<setting name="aggressiveLazyLoading" value="true" />
 		<setting name="cacheEnabled" value="false" />
 		<!-- 打印sql语句 -->
-		<!-- -->
+		<!-- <setting name="logImpl" value="STDOUT_LOGGING" /> -->
 		<setting name="logImpl" value="STDOUT_LOGGING" />
 	</settings>
+	<!-- <typeAliases> -->
+	<!-- # 定义单个别名 -->
+	<!-- <typeAlias type="com.domain.User" alias="user"/> -->
+	<!-- # 批量的别名定义，扫描整个包下面的所有类，别名为类名（首字母大小写都可以） -->
+	<!-- <package name="com.po"/> -->
+	<!-- <package name="其他包"/> -->
+	<!-- </typeAliases> -->
 	<typeAliases>
 		<package name="com.seax" />
 	</typeAliases>
