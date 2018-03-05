@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +12,6 @@ import com.seax.entity.User;
 import com.seax.service.IUserService;
 import com.seax.toolset.service.IPasswordMD5Encryption;
 import com.seax.toolset.service.IPasswordSHA1Encryption;
-import com.seax.toolset.serviceimpl.PasswordMD5EncryptionImpl;
-import com.seax.toolset.serviceimpl.PasswordSHA1EncryptionImpl;
 
 /**
  * 
@@ -43,6 +40,12 @@ public class UserServiceImpl implements IUserService {
         if (paramsJudge(user)) {
             return 0;
         }
+
+        // 密码加密
+        String saltStr = passwordMD5EncryptionImpl.getSaltStr(16);
+        user.setUserPassword(passwordMD5EncryptionImpl.getEncryptionPassword(
+                user.getUserPassword(), saltStr));
+
         User baseUser = userMapperImpl.selectOneUserByUserName(user);
         // 不能有相同用户名
         if (baseUser != null) {
@@ -77,39 +80,6 @@ public class UserServiceImpl implements IUserService {
         }
 
         return userList;
-    }
-
-    @Test
-    public void passwordTestEncryption() {
-        char[] password = { 'a', 'b', 'c', 'd', '1', '2', '3', '4' };
-
-        passwordMD5EncryptionImpl = new PasswordMD5EncryptionImpl();
-        passwordSHA1EncryptionImpl = new PasswordSHA1EncryptionImpl();
-
-        String saltStr = passwordMD5EncryptionImpl.getSaltStr(16);
-        String md5EPassword = passwordMD5EncryptionImpl.getEncryptionPassword(password.toString(),
-                saltStr);
-        System.out.println("md5密码: " + md5EPassword);
-        String sha1EPassword = passwordSHA1EncryptionImpl.getEncryptionPassword(
-                password.toString(), saltStr);
-        System.out.println("sha1密码: " + sha1EPassword);
-        System.out.println("盐值: " + saltStr);
-
-        boolean checkMD5 = passwordMD5EncryptionImpl.checkPassword(password.toString(),
-                md5EPassword);
-        if (checkMD5) {
-            System.out.println("same");
-        } else {
-            System.out.println("different");
-        }
-
-        boolean checkSHA1 = passwordSHA1EncryptionImpl.checkPassword(password.toString(),
-                md5EPassword);
-        if (checkSHA1) {
-            System.out.println("same");
-        } else {
-            System.out.println("different");
-        }
     }
 
     /**
