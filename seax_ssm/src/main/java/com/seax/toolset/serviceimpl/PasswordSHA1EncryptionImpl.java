@@ -2,8 +2,10 @@ package com.seax.toolset.serviceimpl;
 
 import java.security.MessageDigest;
 import java.util.Random;
+
 import org.apache.commons.codec.binary.Hex;
-import org.junit.Test;
+import org.springframework.stereotype.Service;
+
 import com.seax.toolset.service.IPasswordSHA1Encryption;
 
 /**
@@ -15,6 +17,7 @@ import com.seax.toolset.service.IPasswordSHA1Encryption;
  * @version: 1.0
  * @date: 2018 2018年3月3日 上午9:57:33
  */
+@Service
 public class PasswordSHA1EncryptionImpl implements IPasswordSHA1Encryption {
 
     /**
@@ -32,28 +35,6 @@ public class PasswordSHA1EncryptionImpl implements IPasswordSHA1Encryption {
      */
     private static final Integer ENCRYPTION_Number = 2000;
 
-    @Test
-    public void test() {
-        //        long d1 = System.currentTimeMillis();
-        // 获取盐值(16位)
-        String saltStr = getSaltStr(16);
-        System.out.println("saltStr从盐池中取盐:" + saltStr);
-        //        char[] ar = { 'a', 'b', 'c', 'd', '1', '2', '3', '4' };
-        String ar = "abcd1234";
-
-        // 密码加密
-        String encryptPwd = getEncryptionPassword(ar, saltStr);
-        System.out.println("encryptPwd加密密码:" + encryptPwd);
-
-        String passwordSalt = getSaltByPassword(encryptPwd);
-        System.out.println("passwordSalt从密码中取盐:" + passwordSalt);
-
-        if (checkPassword(ar, encryptPwd)) {
-            System.out.println("same");
-        } else {
-            System.out.println("different");
-        }
-    }
     /**
      * 
      * 从盐池中获取盐值（随机字段）
@@ -211,15 +192,24 @@ public class PasswordSHA1EncryptionImpl implements IPasswordSHA1Encryption {
      * @return true正确,false错误
      */
     @Override
-    public boolean checkPassword(String putInPassword, String getBasePassword) {
+    public boolean checkPassword(String putInPassword, String getBasePassword, String salt) {
         // 非空判断
         boolean flag = (putInPassword != null && !"".equals(putInPassword))
                 && (getBasePassword != null && !"".equals(getBasePassword));
         if (flag) {
-            // 根据库内密码获取盐值
-            String getSaltStrByPassword = getSaltByPassword(getBasePassword);
+            String saltStr = "";
+            if (salt != null && !"".equals(salt)) {
+                // 传入盐值
+                saltStr = salt;
+            } else {
+                // 根据库内密码获取盐值
+                saltStr = getSaltByPassword(getBasePassword);
+            }
+            if ("".equals(saltStr)) {
+                return false;
+            }
             // 获取加密用户输入密码,用于校验
-            String putPwd = getEncryptionPassword(putInPassword, getSaltStrByPassword);
+            String putPwd = getEncryptionPassword(putInPassword, saltStr);
             // 判断用户输入密码与库内密码是否一致
             if (getBasePassword.equals(putPwd)) {
                 return true;

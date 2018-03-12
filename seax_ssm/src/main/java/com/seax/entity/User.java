@@ -8,56 +8,95 @@ package com.seax.entity;
  */
 public class User extends BaseEntity {
 
-	/**
-	 * 用户名
-	 */
-	private String userName;
+    /**
+     * 用户名
+     */
+    private String userName;
 
-	/**
-	 * 用户密码
-	 */
-	private String userPassword;
+    /**
+     * 昵称（或用户姓名）
+     */
+    private String nickName;
 
-	/**
-	 * 昵称（或用户姓名）
-	 */
-	private String nickName;
+    /**
+     * 手机号
+     */
+    private String mobile;
 
-	/**
-	 * 手机号
-	 */
-	private String mobile;
+    /**
+     * 用户密码加密前
+     */
+    private char[] userPassword;
 
-	public String getUserName() {
-		return userName;
-	}
+    /**
+     * 用户密码加密后
+     */
+    private String userPasswordStr;
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    /**
+     * 盐值
+     */
+    private String salt;
 
-	public String getUserPassword() {
-		return userPassword;
-	}
+    /**
+     * 加密类型
+     */
+    private String encryptionType;
 
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public String getNickName() {
-		return nickName;
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
+    public String getNickName() {
+        return nickName;
+    }
 
-	public String getMobile() {
-		return mobile;
-	}
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public char[] getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(char[] userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public String getUserPasswordStr() {
+        return userPasswordStr;
+    }
+
+    public void setUserPasswordStr(String userPasswordStr) {
+        this.userPasswordStr = userPasswordStr;
+    }
+
+    public String getEncryptionType() {
+        return encryptionType;
+    }
+
+    public void setEncryptionType(String encryptionType) {
+        this.encryptionType = encryptionType;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 
 }

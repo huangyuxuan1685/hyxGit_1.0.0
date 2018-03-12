@@ -3,18 +3,16 @@ package com.seax.serviceimpl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seax.dao.UserMapper;
+import com.seax.entity.InsideResult;
 import com.seax.entity.User;
 import com.seax.service.IUserService;
-import com.seax.toolset.service.IPasswordMD5Encryption;
-import com.seax.toolset.service.IPasswordSHA1Encryption;
-import com.seax.toolset.serviceimpl.PasswordMD5EncryptionImpl;
-import com.seax.toolset.serviceimpl.PasswordSHA1EncryptionImpl;
+import com.seax.toolset.service.IPasswordEncryption;
 
 /**
  * 
@@ -32,25 +30,43 @@ public class UserServiceImpl implements IUserService {
     private UserMapper userMapperImpl;
 
     @Autowired
-    private IPasswordMD5Encryption passwordMD5EncryptionImpl;
-
-    @Autowired
-    private IPasswordSHA1Encryption passwordSHA1EncryptionImpl;
+    private IPasswordEncryption passwordEncryptionImpl;
 
     @Override
     public Integer insert(User user) {
+        Integer insertId = -1;
         // 用户名、密码和昵称不能为空
         if (paramsJudge(user)) {
-            return 0;
+            return insertId;
         }
         User baseUser = userMapperImpl.selectOneUserByUserName(user);
         // 不能有相同用户名
         if (baseUser != null) {
-            return 0;
+            return insertId;
         }
         user.setCreatedTime(new Date());
 
-        return userMapperImpl.insert(user);
+        try {
+            InsideResult insideResult = passwordEncryptionImpl.encryptionPassword(null, 32,
+                    user.getUserPassword());
+            if (insideResult.getSuccess()) {
+                Map<String, Object> resultMap = (Map<String, Object>) insideResult.getResultValue();
+                String encryptionPassword = (String) resultMap.get("password");
+                String salt = (String) resultMap.get("salt");
+                String encryptionType = (String) resultMap.get("encryptionType");
+                System.out.println(encryptionPassword);
+
+                user.setUserPasswordStr(encryptionPassword);
+                user.setEncryptionType(encryptionType);
+                user.setSalt(salt);
+                insertId = userMapperImpl.insert(user);
+            }
+        } catch (Exception e) {
+            System.out.println("insert user error:" + e);
+            insertId = -1;
+        }
+
+        return insertId;
     }
 
     @Override
@@ -79,39 +95,6 @@ public class UserServiceImpl implements IUserService {
         return userList;
     }
 
-    @Test
-    public void passwordTestEncryption() {
-        char[] password = { 'a', 'b', 'c', 'd', '1', '2', '3', '4' };
-
-        passwordMD5EncryptionImpl = new PasswordMD5EncryptionImpl();
-        passwordSHA1EncryptionImpl = new PasswordSHA1EncryptionImpl();
-
-        String saltStr = passwordMD5EncryptionImpl.getSaltStr(16);
-        String md5EPassword = passwordMD5EncryptionImpl.getEncryptionPassword(password.toString(),
-                saltStr);
-        System.out.println("md5密码: " + md5EPassword);
-        String sha1EPassword = passwordSHA1EncryptionImpl.getEncryptionPassword(
-                password.toString(), saltStr);
-        System.out.println("sha1密码: " + sha1EPassword);
-        System.out.println("盐值: " + saltStr);
-
-        boolean checkMD5 = passwordMD5EncryptionImpl.checkPassword(password.toString(),
-                md5EPassword);
-        if (checkMD5) {
-            System.out.println("same");
-        } else {
-            System.out.println("different");
-        }
-
-        boolean checkSHA1 = passwordSHA1EncryptionImpl.checkPassword(password.toString(),
-                md5EPassword);
-        if (checkSHA1) {
-            System.out.println("same");
-        } else {
-            System.out.println("different");
-        }
-    }
-
     /**
      * 非空判断
      * 
@@ -133,5 +116,11 @@ public class UserServiceImpl implements IUserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Integer check(User user) {
+
+        return null;
     }
 }

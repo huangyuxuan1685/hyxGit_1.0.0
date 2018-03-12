@@ -61,4 +61,16 @@ public interface IUserService {
      * @return
      */
     List<User> select(User user);
+    
+    /**
+     * 
+     * (方法名称)
+     * @description: TODO (简单说明如何使用，以及其它有助于快速、正确使用它的有关信息)
+     * @author: huangyuxuan
+     * @version: 1.0
+     * @date: 2018 2018年3月6日 下午3:15:31
+     * @param user
+     * @return
+     */
+    Integer check(User user);
 }

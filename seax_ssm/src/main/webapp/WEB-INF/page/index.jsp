@@ -14,22 +14,66 @@
 </head>
 <body>
 	<h2>index</h2>
-	<input type="button" onclick="dadadada">
-	<button onclick="dadadada()"> asdasda </button>
+	<button onclick="add()"> add </button>
+	<button onclick="check()"> check </button>
 	<script type="text/javascript">
-		function dadadada() {
+		function add() {
+			var userPassword = new Object();
+			userPassword.userPasswordStr = "abcd456"
 			var data2 = {
 // 				"id" : "8",
-				"userName" : "ddfsa",
-				"userPassword" : "ddfsa",
-				"nickName" : "dd",
-				"mobile" : "213"
+				"userName" : "hyx",
+				"userPassword" : "abcd456",
+				"nickName" : "hyx",
+				"mobile" : "321"
 			};
 			$.ajax({
 				type : "POST",
 				url : "/user/main",
 				dataType : "json",
-				data : data2,
+				data : {
+					"params" : JSON.stringify(data2)
+				},
+				success : function(a, b, c, d) {
+					console.log(a)
+					console.log(b)
+					console.log(c)
+					console.log(d)
+				},
+				error : function(a, b, c, d) {
+					console.log(a)
+					console.log(b)
+					console.log(c)
+					console.log(d)
+				},
+				fail : function(a, b, c, d) {
+					console.log(a)
+					console.log(b)
+					console.log(c)
+					console.log(d)
+				}
+			});
+		}
+		function check() {
+			var userPassword = new Object();
+			userPassword.userPasswordStr = "abcd456"
+			date = {
+					
+			}
+			var data2 = {
+	 			"id" : "6",
+				"userName" : "hyx",
+				"userPassword" : "abcd456",
+				"nickName" : "hyx",
+				"mobile" : "321"
+			};
+			$.ajax({
+				type : "POST",
+				url : "/user/check",
+				dataType : "json",
+				data : {
+					"params" : JSON.stringify(data2)
+				},
 				success : function(a, b, c, d) {
 					console.log(a)
 					console.log(b)

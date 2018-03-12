@@ -4,61 +4,66 @@
 	<resultMap id="BaseResultMap" type="com.seax.entity.User">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="user_name" property="userName" jdbcType="VARCHAR" />
-		<result column="user_password" property="userPassword"
-			jdbcType="VARCHAR" />
 		<result column="nick_name" property="nickName" jdbcType="VARCHAR" />
 		<result column="mobile" property="mobile" jdbcType="VARCHAR" />
 		<result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
 		<result column="modified_time" property="modifiedTime"
 			jdbcType="TIMESTAMP" />
+		<result column="user_password" property="userPasswordStr" jdbcType="VARCHAR" />
+		<result column="encryption_type" property="encryptionType" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<!-- 人员基本查询 -->
 	<select id="select" resultMap="BaseResultMap" useCache="false">
 		select
-		user_name,
-		user_password,
-		nick_name,
-		mobile,
-		created_time,
-		modified_time
+		u.user_name,
+		u.nick_name,
+		u.mobile,
+		u.created_time,
+		u.modified_time,
+		u.user_password,
+		u.encryption_type
 		from
 		user as u
 		<where>
 			<if test="userName != null and userName !=''">
-				and user_name like concat("%",#{userName},"%")
+				and u.user_name like concat("%",#{userName},"%")
 			</if>
 			<if test="nickName != null and nickName !=''">
-				and nick_name like concat("%",#{nickName},"%")
+				and u.nick_name like concat("%",#{nickName},"%")
 			</if>
 			<if test="mobile != null and mobile !=''">
-				and mobile like concat("%",#{mobile},"%")
+				and u.mobile like concat("%",#{mobile},"%")
 			</if>
 		</where>
 	</select>
 	
+	<!-- 插入用户表 -->
 	<insert id="insert" parameterType="com.seax.entity.User">
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+		SELECT LAST_INSERT_ID()
+		</selectKey>
 	INSERT INTO `user` (
 		user_name,
-		user_password,
 		nick_name,
-		<if test="mobile != null and mobile !=''">
-			mobile,
-		</if>
+		user_password,
+		encryption_type,
+		salt,
+		mobile,
 		created_time
 	)
 	VALUES (
 		#{userName},
-		#{userPassword},
 		#{nickName},
-		<if test="mobile != null and mobile !=''">
-			#{mobile},
-		</if>
+		#{userPasswordStr},
+		#{encryptionType},
+		#{salt},
+		#{mobile},
 		#{createdTime}
 	)
 	</insert>
 	
-	<!-- 根据id查询人员 -->
+	<!-- 根据用户名查询人员 -->
 	<select id="selectOneUserByUserName" resultMap="BaseResultMap" useCache="false">
 		select
 		id,
@@ -70,5 +75,4 @@
 			user_name = #{userName}
 		</where>
 	</select>
-
 </mapper>

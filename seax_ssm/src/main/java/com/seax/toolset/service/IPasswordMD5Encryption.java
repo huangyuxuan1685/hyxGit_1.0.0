@@ -50,5 +50,5 @@ public interface IPasswordMD5Encryption {
      * @param getBasePassword 库中密码
      * @return
      */
-    boolean checkPassword(String putInPassword, String getBasePassword);
+    boolean checkPassword(String putInPassword, String getBasePassword, String salt);
 }

@@ -12,6 +12,7 @@ import com.seax.entity.User;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+
     /**
      * 
      * 查询一个用户
@@ -24,4 +25,5 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     User selectOneUserByUserName(User user);
+
 }
